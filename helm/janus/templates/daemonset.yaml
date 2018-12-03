@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{.Values.daemon.name}}
+  namespace: {{.Values.namespace}}
+  labels:
+    daemon: {{.Values.daemon.name}}
+spec:
+  selector:
+    matchLabels:
+      daemon: {{.Values.daemon.name}}
+  template:
+    metadata:
+      labels:
+        daemon: {{.Values.daemon.name}}
+    spec:
+      containers:
+      - name: {{.Values.daemon.name}}
+        image: {{.Values.daemon.image | quote}}
+        {{- if .Values.tls}}
+        command: [
+          "/janusd",
+          "-tlscafile", "/usr/lib/ssl/certs/ca.crt",
+          "-tlscertfile", "/usr/lib/ssl/certs/server.crt",
+          "-tlskeyfile", "/usr/lib/ssl/certs/server.key",
+        ]
+        {{- end}}
+        ports:
+        - name: {{.Values.daemon.container.portName}}
+          containerPort: {{.Values.daemon.container.port}}
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":{{.Values.daemon.probePort}}"]
+          initialDelaySeconds: 10
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":{{.Values.daemon.probePort}}"]
+          initialDelaySeconds: 5
+        volumeMounts:
+        {{- if .Values.tls}}
+        - name: janus-config-volume
+          mountPath: /usr/lib/ssl/certs
+          readOnly: true
+        {{- end}}
+        - name: sysfscgroup
+          mountPath: /sys/fs/cgroup
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN
+            - SYS_PTRACE
+      hostPID: true
+      serviceAccountName: {{.Values.serviceAccount}}
+      volumes:
+      {{- if .Values.tls}}
+      - name: janus-config-volume
+        configMap:
+          name: janus-config
+      {{- end}}
+      - name: sysfscgroup
+        hostPath:
+          path: /sys/fs/cgroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.daemon.svc.name}}
+  namespace: {{.Values.namespace}}
+  labels:
+    daemon: {{.Values.daemon.name}}
+spec:
+  selector:
+    daemon: {{.Values.daemon.name}}
+  clusterIP: None
+  ports:
+  - name: {{.Values.daemon.svc.portName}}
+    port: {{.Values.daemon.container.port}}
+    targetPort: {{.Values.daemon.container.portName}}

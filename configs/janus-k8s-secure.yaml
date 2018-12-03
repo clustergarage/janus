@@ -1,67 +1,7 @@
----
-apiVersion: project.openshift.io/v1
-kind: Project
+apiVersion: v1
+kind: Namespace
 metadata:
-  annotations:
-    openshift.io/display-name: "Janus"
-    openshift.io/description: "Filesystem permission gatekeeper for Kubernetes"
   name: janus
-spec:
-  finalizers:
-  - openshift.io/origin
-  - kubernetes
----
-apiVersion: v1
-kind: RoleBinding
-metadata:
-  name: admins
-  namespace: janus
-roleRef:
-  name: admin
-subjects:
-- kind: User
-  name: janus-admin
-userNames:
-- janus-admin
----
-apiVersion: v1
-kind: RoleBinding
-metadata:
-  name: system:image-pullers
-  namespace: janus
-groupNames:
-- system:serviceaccounts:janus
-roleRef:
-  name: system:image-puller
-subjects:
-- kind: SystemGroup
-  name: system:serviceaccounts:janus
----
-apiVersion: v1
-kind: RoleBinding
-metadata:
-  name: system:image-builders
-  namespace: janus
-roleRef:
-  name: system:image-builder
-subjects:
-- kind: ServiceAccount
-  name: builder
-userNames:
-- system:serviceaccount:janus:builder
----
-apiVersion: v1
-kind: RoleBinding
-metadata:
-  name: system:deployers
-  namespace: janus
-roleRef:
-  name: system:deployer
-subjects:
-- kind: ServiceAccount
-  name: deployer
-userNames:
-- system:serviceaccount:janus:deployer
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -69,43 +9,18 @@ metadata:
   name: janus-admin
   namespace: janus
 ---
-apiVersion: authorization.openshift.io/v1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: janus-admin
 roleRef:
-  apiGroup: authorization.openshift.io/v1
+  apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cluster-admin
 subjects:
 - kind: ServiceAccount
   name: janus-admin
   namespace: janus
----
-apiVersion: security.openshift.io/v1
-kind: SecurityContextConstraints
-metadata:
-  name: janus
-allowHostDirVolumePlugin: true
-allowHostPID: true
-allowedCapabilities:
-- SYS_ADMIN
-- SYS_PTRACE
-fsGroup:
-  type: RunAsAny
-readOnlyRootFilesystem: false
-runAsUser:
-  type: RunAsAny
-seLinuxContext:
-  type: RunAsAny
-seccompProfiles:
-- '*'
-supplementalGroups:
-  type: RunAsAny
-users:
-- system:serviceaccount:janus:janus-admin
-volumes:
-- '*'
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -135,26 +50,8 @@ spec:
     description: Number of pods currently being guarded
     JSONPath: .status.guardedPods
 ---
-apiVersion: v1
-kind: ImageStream
-metadata:
-  labels:
-    controller: januscontroller
-  name: janus-controller
-  namespace: janus
-spec:
-  tags:
-  - name: v0.1.0
-    from:
-      kind: DockerImage
-      name: clustergarage/janus-controller:v0.1.0
-  - name: latest
-    from:
-      kind: DockerImage
-      name: clustergarage/janus-controller:latest
----
-apiVersion: v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: januscontroller
   namespace: janus
@@ -163,7 +60,8 @@ metadata:
 spec:
   replicas: 1
   selector:
-    controller: januscontroller
+    matchLabels:
+      controller: januscontroller
   template:
     metadata:
       labels:
@@ -172,6 +70,13 @@ spec:
       containers:
       - name: januscontroller
         image: clustergarage/janus-controller:v0.1.0
+        command: [
+          "/januscontroller",
+          "-tls-ca-file", "/usr/lib/ssl/certs/ca.pem",
+          "-tls-cert-file", "/usr/lib/ssl/certs/cert.pem",
+          "-tls-key-file", "/usr/lib/ssl/certs/key.pem",
+          "-tls-server-name", "localhost"
+        ]
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr", ":5000"]
@@ -180,27 +85,15 @@ spec:
           exec:
             command: ["/bin/grpc_health_probe", "-addr", ":5000"]
           initialDelaySeconds: 5
-        securityContext:
-          runAsUser: 0
+        volumeMounts:
+        - name: janus-config-volume
+          mountPath: /usr/lib/ssl/certs
+          readOnly: true
       serviceAccountName: janus-admin
-  triggers:
-  - type: ConfigChange
-  - type: ImageChange
-    imageChangeParams:
-      automatic: true
-      containerNames:
-      - januscontroller
-      from:
-        kind: ImageStreamTag
-        name: janus-controller:v0.1.0
-  strategy:
-    type: Rolling
-    rollingParams:
-      intervalSeconds: 1
-      maxSurge: 25%
-      maxUnavailable: 25%
-      timeoutSeconds: 600
-      updatePeriodSeconds: 1
+      volumes:
+      - name: janus-config-volume
+        configMap:
+          name: janus-config
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -221,6 +114,12 @@ spec:
       containers:
       - name: janusd
         image: clustergarage/janusd:v0.1.0
+        command: [
+          "/janusd",
+          "-tlscafile", "/usr/lib/ssl/certs/ca.pem",
+          "-tlscertfile", "/usr/lib/ssl/certs/cert.pem",
+          "-tlskeyfile", "/usr/lib/ssl/certs/key.pem"
+        ]
         ports:
         - name: grpc
           containerPort: 50051
@@ -233,6 +132,9 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr", ":50051"]
           initialDelaySeconds: 5
         volumeMounts:
+        - name: janus-config-volume
+          mountPath: /usr/lib/ssl/certs
+          readOnly: true
         - name: sysfscgroup
           mountPath: /sys/fs/cgroup
         securityContext:
@@ -241,9 +143,11 @@ spec:
             - SYS_ADMIN
             - SYS_PTRACE
       hostPID: true
-      qosClass: Guaranteed
       serviceAccountName: janus-admin
       volumes:
+      - name: janus-config-volume
+        configMap:
+          name: janus-config
       - name: sysfscgroup
         hostPath:
           path: /sys/fs/cgroup
@@ -261,6 +165,5 @@ spec:
   clusterIP: None
   ports:
   - name: grpc
-    protocol: TCP
     port: 50051
     targetPort: grpc

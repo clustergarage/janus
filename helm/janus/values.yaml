@@ -1,0 +1,20 @@
+namespace: janus
+serviceAccount: janus-admin
+clusterRoleBinding: janus-admin
+configMap:
+  name: janus-config
+controller:
+  name: januscontroller
+  image: clustergarage/janus-controller:v0.1.0
+  replicas: 1
+  probePort: 5000
+daemon:
+  name: janusd
+  image: clustergarage/janusd:v0.1.0
+  probePort: 50051
+  container:
+    port: 50051
+    portName: grpc
+  svc:
+    name: janusd-svc
+    portName: grpc

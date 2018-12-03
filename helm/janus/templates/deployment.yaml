@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.controller.name}}
+  namespace: {{.Values.namespace}}
+  labels:
+    controller: {{.Values.controller.name}}
+spec:
+  replicas: {{.Values.controller.replicas}}
+  selector:
+    matchLabels:
+      controller: {{.Values.controller.name}}
+  template:
+    metadata:
+      labels:
+        controller: {{.Values.controller.name}}
+    spec:
+      containers:
+      - name: {{.Values.controller.name}}
+        image: {{.Values.controller.image | quote}}
+        {{- if .Values.tls}}
+        command: [
+          "/januscontroller",
+          "-tls-ca-file", "/usr/lib/ssl/certs/ca.crt",
+          "-tls-cert-file", "/usr/lib/ssl/certs/server.crt",
+          "-tls-key-file", "/usr/lib/ssl/certs/server.key",
+          "-tls-server-name", "localhost"
+        ]
+        {{- end}}
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":{{.Values.controller.probePort}}"]
+          initialDelaySeconds: 10
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":{{.Values.controller.probePort}}"]
+          initialDelaySeconds: 5
+        {{- if .Values.tls}}
+        volumeMounts:
+        - name: janus-config-volume
+          mountPath: /usr/lib/ssl/certs
+          readOnly: true
+        {{- end}}
+      serviceAccountName: {{.Values.serviceAccount}}
+      {{- if .Values.tls}}
+      volumes:
+      - name: janus-config-volume
+        configMap:
+          name: janus-config
+      {{- end}}
