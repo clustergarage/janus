@@ -1,0 +1,16 @@
+---
+- title: Getting Started
+  desc: |
+    Jump right in and start using the product with minimal requirements.
+  icon: play-circle
+  doc: getting-started
+- title: Defining Watchers
+  desc: |
+    Full list of features and options that can be defined for an JanusWatcher.
+  icon: cog
+  doc: januswatcher
+- title: Technical Guide
+  desc: |
+    Deep dive of the architecture and how it works in a clustered environment.
+  icon: info
+  doc: overview

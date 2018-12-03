@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Getting Started | Janus</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Getting Started" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Janus works by configuring a custom Kubernetes resource that defines paths and events that you want to be notified about for your current deployments. This custom resource, in conjunction with a cluster controller running and listening for lifecycle events, is responsible for maintaining a source of truth between the state of the cluster and the daemons listening for filesystem events on each node." />
+<meta property="og:description" content="Janus works by configuring a custom Kubernetes resource that defines paths and events that you want to be notified about for your current deployments. This custom resource, in conjunction with a cluster controller running and listening for lifecycle events, is responsible for maintaining a source of truth between the state of the cluster and the daemons listening for filesystem events on each node." />
+<meta property="og:site_name" content="Janus" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-12-02T21:09:33-05:00" />
+<script type="application/ld+json">
+{"description":"Janus works by configuring a custom Kubernetes resource that defines paths and events that you want to be notified about for your current deployments. This custom resource, in conjunction with a cluster controller running and listening for lifecycle events, is responsible for maintaining a source of truth between the state of the cluster and the daemons listening for filesystem events on each node.","@type":"BlogPosting","url":"/janus/docs/getting-started/","headline":"Getting Started","datePublished":"2018-12-02T21:09:33-05:00","dateModified":"2018-12-02T21:09:33-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/janus/docs/getting-started/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <meta property="og:image" content=""/>
+  <link rel="stylesheet" href="/janus/assets/css/main.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css">
+  <link rel="shortcut icon" type="image/png" href="/janus/assets/img/favicon.png" >
+  <link rel="alternate" type="application/rss+xml" title="Janus" href="/janus/feed.xml">
+  <script src="/janus/assets/js/main.js"></script>
+  
+</head>
+
+
+    <body>
+
+    <header class="uk-background-secondary">
+    <div data-uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky" class="uk-sticky uk-sticky-fixed" style="position: fixed; top: 0px; width: 1904px;">
+        <nav class="uk-navbar-container">
+            <div class="uk-container">
+    <div data-uk-navbar>
+        <div class="uk-navbar-left">
+
+            <a class="uk-navbar-item uk-logo" href="/janus/">Janus</a>
+
+        </div>
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav uk-visible@m">
+                
+                    
+                    
+                        <li><a href="/janus/docs" >Documentation</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/changelog" >Changelog</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/contact" >Contact</a></li>
+                    
+                
+            </ul>
+
+            
+
+            <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-navbar-toggle-icon data-uk-toggle></a>
+
+        </div>
+    </div>
+</div>
+
+        </nav>
+    </div>
+</header>
+
+
+    
+
+    <div class="uk-section">
+    <div class="uk-container">
+        <div class="uk-grid-large" data-uk-grid>
+
+            <div class="sidebar-fixed-width uk-visible@m">
+                <div class="sidebar-docs uk-position-fixed">
+                    
+                    <h5>Introduction</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/overview/">Overview</a></li>
+                    
+                      
+                      
+                      <li class="uk-active"><a href="/janus/docs/getting-started/">Getting Started</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+                    
+                    </ul>
+                    
+                    <h5>Technical Guide</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/monitoring/">Monitoring Watches</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/examples/">Examples</a></li>
+                    
+                    </ul>
+                    
+                </div>
+            </div>
+
+            <div class="uk-width-1-1 uk-width-expand@m">
+
+                <article class="uk-article">
+
+                    <h1 class="uk-article-title">Getting Started</h1>
+
+                    <p class="subtitle uk-text-lead uk-text-muted">Installing Janus in your Kubernetes cluster</p>
+
+                    <div class="article-content">
+                        <p><strong>Janus</strong> works by configuring a custom Kubernetes resource that defines
+paths and events that you want to be notified about for your current
+deployments. This custom resource, in conjunction with a cluster controller
+running and listening for lifecycle events, is responsible for maintaining a
+source of truth between the state of the cluster and the daemons listening for
+filesystem events on each node.</p>
+
+<h4 class="no_toc" id="topics">Topics</h4>
+<ul id="markdown-toc">
+  <li><a href="#prerequisites" id="markdown-toc-prerequisites">Prerequisites</a></li>
+  <li><a href="#quickstart" id="markdown-toc-quickstart">Quickstart</a></li>
+  <li><a href="#secure-communication" id="markdown-toc-secure-communication">Secure Communication</a></li>
+  <li><a href="#limitations-and-caveats" id="markdown-toc-limitations-and-caveats">Limitations and Caveats</a></li>
+  <li><a href="#need-help" id="markdown-toc-need-help">Need Help?</a></li>
+</ul>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>In order to properly run these components, a Kubernetes cluster running
+<strong>v1.9</strong> or above is required. Depending on your environment, there may be
+additional requirements to run both the daemon with Linux capabilities and the
+controller with an appropriate level of access to receive cluster events.</p>
+
+<p>Since procfs <code class="highlighter-rouge">/proc/[pid]</code> subdirectories are owned by the effective user and
+group of the process, we require escalated privileges so the daemon can watch
+for filesystem events of any process running in your cluster, directly on the
+host.</p>
+
+<p>If running in a multi-tenant environment, you certainly will <strong>not</strong> be able to
+have the kind of escalated privileges needed to gain access to the host
+filesystem, for obvious reasons.</p>
+
+<h2 id="quickstart">Quickstart</h2>
+
+<p>We provide multiple paths of configuration for both vanilla Kubernetes and
+OpenShift, which has additional security measures in place.</p>
+
+<ul uk-tab="">
+
+	<li class="uk-active"><a href="#">Kubernetes</a></li>
+
+	<li><a href="#">OpenShift</a></li>
+
+	<li><a href="#">Helm</a></li>
+
+</ul>
+
+<ul class="uk-switcher uk-margin">
+
+	<li>
+<p>To deploy <strong>Janus</strong> on a vanilla Kubernetes environment, simply run an
+<code class="highlighter-rouge">apply</code> on the following hosted configuration:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="se">\</span>
+  https://raw.githubusercontent.com/clustergarage/janus/master/configs/janus-k8s.yaml
+</code></pre></div></div>
+
+<p>This will create a <code class="highlighter-rouge">Namespace</code> <strong>janus</strong> under which all the components will be
+organized.</p>
+</li>
+
+	<li>
+<p>OpenShift has a more opinionated security model by default. We assume a normal
+OpenShift install, which requires a few more components to be created. This can
+be done with the following command:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc apply <span class="nt">-f</span> <span class="se">\</span>
+  https://raw.githubusercontent.com/clustergarage/janus/master/configs/janus-openshift.yaml
+</code></pre></div></div>
+
+<p>This will create an OpenShift <code class="highlighter-rouge">Project</code> <strong>janus</strong> under which all components
+will be organized. In addition to creating a <code class="highlighter-rouge">Namespace</code>, an OpenShift project
+needs various <code class="highlighter-rouge">RoleBindings</code> for building and pulling images via an
+<code class="highlighter-rouge">ImageStream</code> and for our <code class="highlighter-rouge">ServiceAccount</code> to have an admin role reference.
+OpenShift also requires <code class="highlighter-rouge">SecurityContextConstraints</code> to properly run containers
+as certain users, with Linux capabilities, and gain access to the host PID
+namespace and volume.</p>
+</li>
+
+	<li>
+<p>To install using a Helm chart, we provide a couple ways to do this. The
+simplest being an archive file included in each release:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm install <span class="se">\</span>
+  https://github.com/clustergarage/janus/releases/download/v0.1.0/janus-0.1.0.tgz
+</code></pre></div></div>
+
+<p>The other way is to add a Helm repository to your cluster and update/install
+using these mechanisms:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm repo add clustergarage <span class="se">\</span>
+  https://raw.githubusercontent.com/clustergarage/janus/master/helm/
+helm repo update
+helm install clustergarage/janus
+</code></pre></div></div>
+
+<p>This will create a <code class="highlighter-rouge">Namespace</code> <strong>janus</strong> under which all the components will be
+organized.</p>
+</li>
+
+</ul>
+
+<p>Under the <strong>janus</strong> namespace is a <code class="highlighter-rouge">ServiceAccount</code> used to run all items of
+<strong>Janus</strong>; this service account will also get a <code class="highlighter-rouge">ClusterRoleBinding</code> with
+settings that allow the controller and daemon to be run with their required
+privileges.</p>
+
+<p>A <code class="highlighter-rouge">CustomResourceDefinition</code> is included to define a custom <strong>JanusWatcher</strong>
+type housing the pod selector, paths, events, and optional flags for the
+watcher.</p>
+
+<p>Finally, the <strong>januscontroller</strong> <code class="highlighter-rouge">Deployment</code> and <strong>janusd</strong> <code class="highlighter-rouge">DaemonSet</code> are
+the core of the product. There is a headless <code class="highlighter-rouge">Service</code> used to communicate
+between the controller and all instances of the daemons.</p>
+
+<blockquote>
+  <p>You can verify that it installed properly by inspecting <code class="highlighter-rouge">kubectl -n janus get
+all</code></p>
+</blockquote>
+
+<p>All pods should eventually converge into <code class="highlighter-rouge">Running</code> state. The daemon pods in
+particular should be running on each node that run workloads you wish to be
+notified on. The controller is suggested to run with a single replica, as all
+method calls to the daemon are idempotent; it can still function properly with
+&gt;1 replicas, however.</p>
+
+<h2 id="secure-communication">Secure Communication</h2>
+
+<p>To secure the gRPC communication between controller and daemon, we provide
+secure variations of each configurations described above.</p>
+
+<p>You must provide <strong>your own</strong> certificates, which won’t be described in this
+documentation. The daemon will be spun up with a certificate/private key pair
+and an optional CA certificate as the gRPC server(s); the controller will act
+as a client so has additional TLS flags that can be passed in.</p>
+
+<ul uk-tab="">
+
+	<li class="uk-active"><a href="#">Kubernetes</a></li>
+
+	<li><a href="#">OpenShift</a></li>
+
+	<li><a href="#">Helm</a></li>
+
+</ul>
+
+<ul class="uk-switcher uk-margin">
+
+	<li>
+<p>With your SSL certificates, create a <strong>ConfigMap</strong> with keys as demonstrated in
+the <a href="https://raw.githubusercontent.com/clustergarage/janus/master/examples/janus-config.yaml">examples/ folder</a>.
+This includes a <code class="highlighter-rouge">ca.pem</code> for root CA certificate, <code class="highlighter-rouge">cert.pem</code> and <code class="highlighter-rouge">key.pem</code> for
+certificate/private keys. Apply the <strong>ConfigMap</strong> and the secure variation of
+the configuration files.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="se">\</span>
+  https://raw.githubusercontent.com/clustergarage/janus/master/configs/janus-k8s-secure.yaml
+<span class="c"># add your keys to a ConfigMap</span>
+kubectl apply <span class="nt">-f</span> janus-config.yaml
+</code></pre></div></div>
+</li>
+
+	<li>
+<p>With your SSL certificates, create a <strong>ConfigMap</strong> with keys as demonstrated in
+the <a href="https://raw.githubusercontent.com/clustergarage/janus/master/examples/janus-config.yaml">examples/ folder</a>.
+This includes a <code class="highlighter-rouge">ca.pem</code> for root CA certificate, <code class="highlighter-rouge">cert.pem</code> and <code class="highlighter-rouge">key.pem</code> for
+certificate/private keys. Apply the <strong>ConfigMap</strong> and the secure variation of
+the configuration files.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oc apply <span class="nt">-f</span> <span class="se">\</span>
+  https://raw.githubusercontent.com/clustergarage/janus/master/configs/janus-openshift-secure.yaml
+<span class="c"># add your keys to a ConfigMap</span>
+oc apply <span class="nt">-f</span> janus-config.yaml
+</code></pre></div></div>
+</li>
+
+	<li>
+<p>There are various limitations with Helm and providing SSL certs outside the
+provided chart; in particular, any files that are read need to be included
+inside the chart directory itself. Until this feature is added to Helm, we have
+to do some hacky bits first.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># download clustergarage/janus helm chart locally</span>
+cp <span class="nt">-r</span> /path/to/ssl/certs /path/to/janus/
+helm install ./janus <span class="nt">--set</span> <span class="nv">tls</span><span class="o">=</span><span class="nb">true</span>
+</code></pre></div></div>
+</li>
+
+</ul>
+
+<h2 id="limitations-and-caveats">Limitations and Caveats</h2>
+
+<p><code class="highlighter-rouge">janusd</code> should be scheduled out on all nodes that can handle compute that you
+would want to monitor. If your nodes have any
+<a href="https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/">taints</a>,
+then there will need to be an explicit tolerance set on the <strong>DaemonSet</strong> in
+order for these pods to be run on them. It will be up to you to add the
+appropriate tolerance to the configuration.</p>
+
+<p>Certain images (such as the official <strong>nginx</strong>) will symlink to special devices
+such as <code class="highlighter-rouge">/var/log/nginx/access.log -&gt; /dev/stdout</code>. These devices are streams
+which are symlinks to pseudo-terminals on the system and are not files that can
+be monitored by <code class="highlighter-rouge">inotify</code>. For the same reason, they are also not candidates for
+the practice of file integrity monitoring.</p>
+
+<h2 id="need-help">Need Help?</h2>
+
+<p>If you have any issues with any of the steps to get started with running this
+in your cluster, please begin by checking to see if any of the issues you may
+be facing are included in our
+<a href="https://github.com/clustergarage/janus/issues">GitHub issues</a>. If you
+suspect you may be having problems not recorded there, open a detailed issue
+with all steps and pertinent information about your cluster setup.</p>
+
+<p>If you wish to contact us directly, use the form located on the
+<a href="/janus/contact/">Contact</a> page.</p>
+
+                    </div>
+
+                    <hr class="uk-margin-medium">
+
+                    
+
+
+  
+  
+
+  
+  
+    <ul class="uk-pagination uk-margin-top">
+          
+            
+            
+            <li><a class="hvr-back" href="/janus/docs/overview/">&larr; Previous</a></li>
+          
+          
+            
+            
+            <li class="uk-margin-auto-left"><a class="hvr-forward" href="/janus/docs/januswatcher/">Next &rarr;</a></li>
+          
+    </ul>
+    
+
+
+                    <div class="uk-margin-large-top">
+    <h3>What's Next</h3>
+
+    
+    
+    
+
+    <ul class="uk-list">
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+        
+        
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/monitoring/">Monitoring Watches</a></li>
+        
+        
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/overview/">Overview</a></li>
+        
+        
+    
+
+    
+    </ul>
+</div>
+
+                </article>
+
+                <script>
+                    // Table of contents scroll to
+                    UIkit.scroll('#markdown-toc a', {
+                        duration: 400,
+                        offset: 120
+                    });
+                </script>
+
+            </div>
+
+    </div>
+</div>
+
+
+    <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" data-uk-close></button>
+
+        <ul class="uk-nav uk-nav-default">
+            <li><a class="uk-logo uk-margin-small-bottom" href="/janus/">Janus</a></li>
+            
+            <li><a href="/janus/docs" >Documentation</a></li>
+            
+            <li><a href="/janus/changelog" >Changelog</a></li>
+            
+            <li><a href="/janus/contact" >Contact</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+
+    </body>
+
+</html>

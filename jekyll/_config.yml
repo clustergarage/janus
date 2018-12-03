@@ -1,0 +1,49 @@
+title: Janus
+description: Filesystem Gatekeeper for Kubernetes
+baseurl: /janus
+permalink: /:title/
+brand:
+  #image: logo.svg # upload logo to /assets/img/ folder
+  text: Janus
+collections:
+  docs:
+    output: true
+authors:
+  adam:
+    name: Adam Kentosh
+    github: akentosh
+  brett:
+    name: Brett Fowle
+    github: bfowle
+  mike:
+    name: Mike Sandman
+    github: n8behavior
+  team:
+    name: ClusterGarage
+    github: clustergarage
+footer:
+  copyright: |
+    Copyright &copy; 2018 <a href="https://clustergarage.io">ClusterGarage</a> | <a href="https://github.com/clustergarage/janus">Janus</a> .
+#google_analytics:
+markdown: kramdown
+highlighter: rouge
+sass:
+  style: compressed
+remote_theme: clustergarage/docs-theme
+mermaid:
+  src: "https://unpkg.com/mermaid@7.0.0/dist/mermaid.min.js"
+  #src: "https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"
+  #src: "https://unpkg.com/mermaid@8.0.0-rc.8/dist/mermaid.min.js"
+plugins:
+- jekyll-avatar
+- jekyll-code-tabs
+- jekyll-feed
+- jekyll-mermaid
+- jekyll-redirect-from
+- jekyll-remote-theme
+- jekyll-seo-tag
+exclude:
+- README.md
+- Gemfile
+- Gemfile.lock
+- node_modules

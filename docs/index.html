@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Filesystem Gatekeeper for Kubernetes | Janus</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Filesystem Gatekeeper for Kubernetes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Filesystem Gatekeeper for Kubernetes" />
+<meta property="og:description" content="Filesystem Gatekeeper for Kubernetes" />
+<meta property="og:site_name" content="Janus" />
+<script type="application/ld+json">
+{"description":"Filesystem Gatekeeper for Kubernetes","@type":"WebSite","url":"/janus/","headline":"Filesystem Gatekeeper for Kubernetes","name":"Janus","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <meta property="og:image" content=""/>
+  <link rel="stylesheet" href="/janus/assets/css/main.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css">
+  <link rel="shortcut icon" type="image/png" href="/janus/assets/img/favicon.png" >
+  <link rel="alternate" type="application/rss+xml" title="Janus" href="/janus/feed.xml">
+  <script src="/janus/assets/js/main.js"></script>
+  
+</head>
+
+
+    <body>
+
+    <header class="uk-background-secondary">
+    <div data-uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky" class="uk-sticky uk-sticky-fixed" style="position: fixed; top: 0px; width: 1904px;">
+        <nav class="uk-navbar-container">
+            <div class="uk-container">
+    <div data-uk-navbar>
+        <div class="uk-navbar-left">
+
+            <a class="uk-navbar-item uk-logo" href="/janus/">Janus</a>
+
+        </div>
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav uk-visible@m">
+                
+                    
+                    
+                        <li><a href="/janus/docs" >Documentation</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/changelog" >Changelog</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/contact" >Contact</a></li>
+                    
+                
+            </ul>
+
+            
+
+            <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-navbar-toggle-icon data-uk-toggle></a>
+
+        </div>
+    </div>
+</div>
+
+        </nav>
+    </div>
+</header>
+
+
+    
+        <div class="uk-section section-hero" data-uk-scrollspy="cls: uk-animation-slide-bottom-medium; repeat: true">
+    <div class="uk-container uk-container-small">
+        
+        <h1 class="uk-heading-hero uk-text-center uk-margin-remove-top">Janus</h1>
+        <p class="subtitle uk-text-lead uk-text-center">File Integrity Monitoring for Kubernetes</p>
+
+        
+
+    </div>
+</div>
+
+    
+
+    
+
+
+<div class="uk-section">
+    <div class="uk-container">
+
+        
+            <h2 class="uk-text-center heading-hero-2">Browse Topics</h2>
+        
+
+        <p class="subtitle uk-text-lead uk-text-center">Let&#39;s not complicate things, just start reading...</p>
+
+        <div class="uk-child-width-1-3@m uk-grid-match uk-text-center uk-margin-medium-top" data-uk-grid>
+        
+            
+            
+            
+            <div>
+                <div class="uk-card uk-card-body uk-inline uk-border-rounded">
+                    <a class="uk-position-cover" href="/janus/docs/getting-started/"></a>
+                    
+                    <span data-uk-icon="icon: play-circle; ratio: 2" class=""></span>
+                    
+                    <h3 class="uk-card-title uk-margin">Getting Started</h3>
+                    
+                    <p>Jump right in and start using the product with minimal requirements.
+</p>
+                    
+                </div>
+            </div>
+            
+        
+            
+            
+            
+            <div>
+                <div class="uk-card uk-card-body uk-inline uk-border-rounded">
+                    <a class="uk-position-cover" href="/janus/docs/januswatcher/"></a>
+                    
+                    <span data-uk-icon="icon: cog; ratio: 2" class=""></span>
+                    
+                    <h3 class="uk-card-title uk-margin">Defining Watchers</h3>
+                    
+                    <p>Full list of features and options that can be defined for an JanusWatcher.
+</p>
+                    
+                </div>
+            </div>
+            
+        
+            
+            
+            
+            <div>
+                <div class="uk-card uk-card-body uk-inline uk-border-rounded">
+                    <a class="uk-position-cover" href="/janus/docs/overview/"></a>
+                    
+                    <span data-uk-icon="icon: info; ratio: 2" class=""></span>
+                    
+                    <h3 class="uk-card-title uk-margin">Technical Guide</h3>
+                    
+                    <p>Deep dive of the architecture and how it works in a clustered environment.
+</p>
+                    
+                </div>
+            </div>
+            
+        
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<div class="uk-section uk-text-center">
+    <div class="uk-container uk-container-small">
+
+        
+            <h2 class="uk-text-center heading-hero-2">Why would I use Janus?</h2>
+        
+
+        <p class="subtitle uk-text-lead uk-text-center">Gain insight into directory and file changes for apps in your Kubernetes
+cluster; be confident come assessment time.
+</p>
+
+        <div class="article-content uk-margin-medium-top"><h2 id="in-more-words">In more words…</h2>
+
+<p>At the time of creating this product, there weren’t any other solutions out
+there. We designed the architecture around common Linux kernel functionality to
+ensure well-known practices around inode monitoring. The rest of which was
+making sure it performed well in a clustered environment, and had features that
+security experts and assessors could healthily engage on.</p>
+</div>
+    </div>
+</div>
+
+
+
+<div class="uk-section uk-text-center">
+    <div class="uk-container uk-container-small">
+        <div data-uk-scrollspy="cls: uk-animation-slide-bottom-medium; repeat: true">
+            <h3>Didn't find an answer to your question?</h3>
+            <p class="subtitle uk-text-lead uk-text-center">We&#39;d like to hear your input.</p>
+            <a class="uk-button uk-button-primary uk-button-large button-cta" href="/janus/contact/">Contact Us</a>
+        </div>
+    </div>
+</div>
+
+
+
+    <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" data-uk-close></button>
+
+        <ul class="uk-nav uk-nav-default">
+            <li><a class="uk-logo uk-margin-small-bottom" href="/janus/">Janus</a></li>
+            
+            <li><a href="/janus/docs" >Documentation</a></li>
+            
+            <li><a href="/janus/changelog" >Changelog</a></li>
+            
+            <li><a href="/janus/contact" >Contact</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+        <footer class="uk-section uk-text-center uk-text-muted uk-link-muted">
+    <div class="uk-container uk-container-small">
+
+        <div>
+            <ul class="uk-subnav uk-flex-center">
+                
+                    
+                    
+                        <li><a href="/janus/docs" >Documentation</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/changelog" >Changelog</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/contact" >Contact</a></li>
+                    
+                
+            </ul>
+        </div>
+        <div class="uk-margin-medium uk-text-small copyright">Copyright &copy; 2018 <a href="https://clustergarage.io">ClusterGarage</a> | <a href="https://github.com/clustergarage/janus">Janus</a> .
+</div>
+
+    </div>
+</footer>
+
+    
+
+    </body>
+
+</html>

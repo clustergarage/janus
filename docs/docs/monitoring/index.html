@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Monitoring Watches | Janus</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Monitoring Watches" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Once you have JanusWatchers defined, you’re ready to start monitoring for notify events; perhaps you’ll even want to set up alerts on high priority events. There are generic logfiles included in both apps, and we provide out-of-the-box metrics handling with Prometheus so you’ll be able to receive time-series data that you can immediately monitor. Ultimately, it will be up to you to use your logging framework of choice to monitor the way you’re used to doing." />
+<meta property="og:description" content="Once you have JanusWatchers defined, you’re ready to start monitoring for notify events; perhaps you’ll even want to set up alerts on high priority events. There are generic logfiles included in both apps, and we provide out-of-the-box metrics handling with Prometheus so you’ll be able to receive time-series data that you can immediately monitor. Ultimately, it will be up to you to use your logging framework of choice to monitor the way you’re used to doing." />
+<meta property="og:site_name" content="Janus" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-12-02T21:09:33-05:00" />
+<script type="application/ld+json">
+{"description":"Once you have JanusWatchers defined, you’re ready to start monitoring for notify events; perhaps you’ll even want to set up alerts on high priority events. There are generic logfiles included in both apps, and we provide out-of-the-box metrics handling with Prometheus so you’ll be able to receive time-series data that you can immediately monitor. Ultimately, it will be up to you to use your logging framework of choice to monitor the way you’re used to doing.","@type":"BlogPosting","url":"/janus/docs/monitoring/","headline":"Monitoring Watches","datePublished":"2018-12-02T21:09:33-05:00","dateModified":"2018-12-02T21:09:33-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/janus/docs/monitoring/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <meta property="og:image" content=""/>
+  <link rel="stylesheet" href="/janus/assets/css/main.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css">
+  <link rel="shortcut icon" type="image/png" href="/janus/assets/img/favicon.png" >
+  <link rel="alternate" type="application/rss+xml" title="Janus" href="/janus/feed.xml">
+  <script src="/janus/assets/js/main.js"></script>
+  
+</head>
+
+
+    <body>
+
+    <header class="uk-background-secondary">
+    <div data-uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky" class="uk-sticky uk-sticky-fixed" style="position: fixed; top: 0px; width: 1904px;">
+        <nav class="uk-navbar-container">
+            <div class="uk-container">
+    <div data-uk-navbar>
+        <div class="uk-navbar-left">
+
+            <a class="uk-navbar-item uk-logo" href="/janus/">Janus</a>
+
+        </div>
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav uk-visible@m">
+                
+                    
+                    
+                        <li><a href="/janus/docs" >Documentation</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/changelog" >Changelog</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/contact" >Contact</a></li>
+                    
+                
+            </ul>
+
+            
+
+            <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-navbar-toggle-icon data-uk-toggle></a>
+
+        </div>
+    </div>
+</div>
+
+        </nav>
+    </div>
+</header>
+
+
+    
+
+    <div class="uk-section">
+    <div class="uk-container">
+        <div class="uk-grid-large" data-uk-grid>
+
+            <div class="sidebar-fixed-width uk-visible@m">
+                <div class="sidebar-docs uk-position-fixed">
+                    
+                    <h5>Introduction</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/overview/">Overview</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/getting-started/">Getting Started</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+                    
+                    </ul>
+                    
+                    <h5>Technical Guide</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class="uk-active"><a href="/janus/docs/monitoring/">Monitoring Watches</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/examples/">Examples</a></li>
+                    
+                    </ul>
+                    
+                </div>
+            </div>
+
+            <div class="uk-width-1-1 uk-width-expand@m">
+
+                <article class="uk-article">
+
+                    <h1 class="uk-article-title">Monitoring Watches</h1>
+
+                    <p class="subtitle uk-text-lead uk-text-muted">Set up monitoring and alerts of watchers</p>
+
+                    <div class="article-content">
+                        <p>Once you have <a href="/janus/docs/januswatcher/">JanusWatchers</a> defined,
+you’re ready to start monitoring for notify events; perhaps you’ll even want to
+set up alerts on high priority events. There are generic logfiles included in
+both apps, and we provide out-of-the-box metrics handling with
+<a href="https://prometheus.io">Prometheus</a> so you’ll be able to receive time-series
+data that you can immediately monitor. Ultimately, it will be up to you to use
+your logging framework of choice to monitor the way you’re used to doing.</p>
+
+<h2 id="logfiles">Logfiles</h2>
+
+<p>Using the <code class="highlighter-rouge">glog</code> logging framework that most Kubernetes-related projects also
+leverage, you can locate logfiles in both <strong>janusd</strong> and <strong>januscontroller</strong>
+containers at <code class="highlighter-rouge">/tmp/janusd.INFO</code> and <code class="highlighter-rouge">/tmp/januscontroller.INFO</code>. The
+<strong>janusd</strong> logs will show actual <code class="highlighter-rouge">inotify</code> events that were reported as they
+happened, where <strong>januscontroller</strong> log will only include Kubernetes
+controller-related log messages such as receiving new watchers, connecting the
+controller to daemons via gRPC, and pods being created, deleted, and updated
+that a watcher cares about.</p>
+
+                    </div>
+
+                    <hr class="uk-margin-medium">
+
+                    
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <ul class="uk-pagination uk-margin-top">
+          
+            
+            
+            <li><a class="hvr-back" href="/janus/docs/januswatcher/">&larr; Previous</a></li>
+          
+          
+            
+            
+            <li class="uk-margin-auto-left"><a class="hvr-forward" href="/janus/docs/examples/">Next &rarr;</a></li>
+          
+    </ul>
+    
+
+
+                    <div class="uk-margin-large-top">
+    <h3>What's Next</h3>
+
+    
+    
+    
+
+    <ul class="uk-list">
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/getting-started/">Getting Started</a></li>
+        
+        
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+        
+        
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+    </ul>
+</div>
+
+                </article>
+
+                <script>
+                    // Table of contents scroll to
+                    UIkit.scroll('#markdown-toc a', {
+                        duration: 400,
+                        offset: 120
+                    });
+                </script>
+
+            </div>
+
+    </div>
+</div>
+
+
+    <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" data-uk-close></button>
+
+        <ul class="uk-nav uk-nav-default">
+            <li><a class="uk-logo uk-margin-small-bottom" href="/janus/">Janus</a></li>
+            
+            <li><a href="/janus/docs" >Documentation</a></li>
+            
+            <li><a href="/janus/changelog" >Changelog</a></li>
+            
+            <li><a href="/janus/contact" >Contact</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+
+    </body>
+
+</html>

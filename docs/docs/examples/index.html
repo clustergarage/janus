@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Examples | Janus</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Examples" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Topics" />
+<meta property="og:description" content="Topics" />
+<meta property="og:site_name" content="Janus" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-12-02T21:09:33-05:00" />
+<script type="application/ld+json">
+{"description":"Topics","@type":"BlogPosting","url":"/janus/docs/examples/","headline":"Examples","datePublished":"2018-12-02T21:09:33-05:00","dateModified":"2018-12-02T21:09:33-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/janus/docs/examples/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <meta property="og:image" content=""/>
+  <link rel="stylesheet" href="/janus/assets/css/main.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css">
+  <link rel="shortcut icon" type="image/png" href="/janus/assets/img/favicon.png" >
+  <link rel="alternate" type="application/rss+xml" title="Janus" href="/janus/feed.xml">
+  <script src="/janus/assets/js/main.js"></script>
+  
+</head>
+
+
+    <body>
+
+    <header class="uk-background-secondary">
+    <div data-uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky" class="uk-sticky uk-sticky-fixed" style="position: fixed; top: 0px; width: 1904px;">
+        <nav class="uk-navbar-container">
+            <div class="uk-container">
+    <div data-uk-navbar>
+        <div class="uk-navbar-left">
+
+            <a class="uk-navbar-item uk-logo" href="/janus/">Janus</a>
+
+        </div>
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav uk-visible@m">
+                
+                    
+                    
+                        <li><a href="/janus/docs" >Documentation</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/changelog" >Changelog</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/contact" >Contact</a></li>
+                    
+                
+            </ul>
+
+            
+
+            <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-navbar-toggle-icon data-uk-toggle></a>
+
+        </div>
+    </div>
+</div>
+
+        </nav>
+    </div>
+</header>
+
+
+    
+
+    <div class="uk-section">
+    <div class="uk-container">
+        <div class="uk-grid-large" data-uk-grid>
+
+            <div class="sidebar-fixed-width uk-visible@m">
+                <div class="sidebar-docs uk-position-fixed">
+                    
+                    <h5>Introduction</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/overview/">Overview</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/getting-started/">Getting Started</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+                    
+                    </ul>
+                    
+                    <h5>Technical Guide</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/monitoring/">Monitoring Watches</a></li>
+                    
+                      
+                      
+                      <li class="uk-active"><a href="/janus/docs/examples/">Examples</a></li>
+                    
+                    </ul>
+                    
+                </div>
+            </div>
+
+            <div class="uk-width-1-1 uk-width-expand@m">
+
+                <article class="uk-article">
+
+                    <h1 class="uk-article-title">Examples</h1>
+
+                    <p class="subtitle uk-text-lead uk-text-muted">Test Janus with some example deployments</p>
+
+                    <div class="article-content">
+                        <h4 class="no_toc" id="topics">Topics</h4>
+<ul id="markdown-toc">
+  <li><a href="#kubernetes" id="markdown-toc-kubernetes">Kubernetes</a>    <ul>
+      <li><a href="#nginx-example" id="markdown-toc-nginx-example">NGiNX Example</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="kubernetes">Kubernetes</h2>
+
+<p>Whether you’re running a vanilla Kubernetes cluster with minikube, or in a
+cloud-provided one such as GKE, we provide a set of examples to test out
+Janus located in the <a href="https://github.com/clustergarage/janus/tree/master/examples">examples/
+folder</a> of the
+GitHub repo.</p>
+
+<h3 id="nginx-example">NGiNX Example</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl run nginx <span class="nt">--image</span><span class="o">=</span>nginx
+kubectl apply <span class="nt">-f</span> <span class="se">\</span>
+  https://raw.githubusercontent.com/clustergarage/janus/master/examples/nginx-janus-watch.yaml
+</code></pre></div></div>
+
+<p>This is a basic example of monitoring two different paths for a single event.
+The watcher spec has a single subject that watches:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">paths</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">/etc/nginx</span>
+<span class="pi">-</span> <span class="s">/etc/init.d/nginx</span>
+<span class="na">events</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">modify</span>
+</code></pre></div></div>
+
+<p>If you were to change any of the files under <code class="highlighter-rouge">/etc/nginx</code> it would notify on
+that <code class="highlighter-rouge">modify</code> message.</p>
+
+<p>You could also edit this watcher and update the <code class="highlighter-rouge">paths</code> to include
+<code class="highlighter-rouge">/var/log/nginx</code>. This should update the watcher, that you can then exec into
+the container to generate some messages:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> &lt;nginx-pod-name&gt; <span class="nt">--</span> /bin/bash
+
+root@&lt;nginx-pod-name&gt;:/# <span class="nb">echo</span> <span class="s2">"test"</span> <span class="o">&gt;&gt;</span> /var/log/nginx/foo.log
+</code></pre></div></div>
+
+<p>This will create a new log file and generate a <code class="highlighter-rouge">MODIFY</code> event that will show up
+in the <code class="highlighter-rouge">janusd</code> logs:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl logs &lt;janusd-pod-name&gt;
+
+MODIFY file <span class="s1">'/var/log/nginx/foo.log'</span> <span class="o">(</span>&lt;nginx-pod-name&gt;:&lt;node-name&gt;<span class="o">)</span>
+</code></pre></div></div>
+
+<p>Another interesting test to try is to edit the <a href="/janus/docs/januswatcher/#recursively-watching-a-directory">JanusWatcher
+definition</a>
+with <code class="highlighter-rouge">recursive: true</code> on the subject to receive all events that happen under
+subdirectories of the specified paths as well. For example, editing the
+<code class="highlighter-rouge">/etc/nginx/conf.d/default.conf</code> once it is watching recursively would report
+messages when it previously would have not.</p>
+
+                    </div>
+
+                    <hr class="uk-margin-medium">
+
+                    
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <ul class="uk-pagination uk-margin-top">
+          
+            
+            
+            <li><a class="hvr-back" href="/janus/docs/monitoring/">&larr; Previous</a></li>
+          
+          
+
+          
+    </ul>
+    
+
+
+                    <div class="uk-margin-large-top">
+    <h3>What's Next</h3>
+
+    
+    
+    
+
+    <ul class="uk-list">
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+    </ul>
+</div>
+
+                </article>
+
+                <script>
+                    // Table of contents scroll to
+                    UIkit.scroll('#markdown-toc a', {
+                        duration: 400,
+                        offset: 120
+                    });
+                </script>
+
+            </div>
+
+    </div>
+</div>
+
+
+    <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" data-uk-close></button>
+
+        <ul class="uk-nav uk-nav-default">
+            <li><a class="uk-logo uk-margin-small-bottom" href="/janus/">Janus</a></li>
+            
+            <li><a href="/janus/docs" >Documentation</a></li>
+            
+            <li><a href="/janus/changelog" >Changelog</a></li>
+            
+            <li><a href="/janus/contact" >Contact</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+
+    </body>
+
+</html>

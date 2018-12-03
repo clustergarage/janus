@@ -1,0 +1,4 @@
+*.yaml linguist-language=YAML linguist-detectable
+*.md linguist-language=Markdown linguist-detectable
+docs/* linguist-documentation linguist-generated
+jekyll/* linguist-documentation=false

@@ -1,0 +1,8 @@
+---
+- title: v0.1.0
+  label: Pre-Release
+  date: 12/02/2018
+  list:
+  - Initial functionality of both janusd and janus-controller.
+  - Definitions for vanilla K8s, OpenShift, and Helm to deploy via janus.
+  - Documentation hosted out of janus.

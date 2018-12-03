@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Defining an JanusWatcher | Janus</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Defining an JanusWatcher" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Once you have Janus installed on your cluster, you are ready to start setting up watchers for your deployments. All possible configurations of the how, and what, of setting up an JanusWatcher on your deployments are described below." />
+<meta property="og:description" content="Once you have Janus installed on your cluster, you are ready to start setting up watchers for your deployments. All possible configurations of the how, and what, of setting up an JanusWatcher on your deployments are described below." />
+<meta property="og:site_name" content="Janus" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-12-02T21:09:33-05:00" />
+<script type="application/ld+json">
+{"description":"Once you have Janus installed on your cluster, you are ready to start setting up watchers for your deployments. All possible configurations of the how, and what, of setting up an JanusWatcher on your deployments are described below.","@type":"BlogPosting","url":"/janus/docs/januswatcher/","headline":"Defining an JanusWatcher","datePublished":"2018-12-02T21:09:33-05:00","dateModified":"2018-12-02T21:09:33-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/janus/docs/januswatcher/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <meta property="og:image" content=""/>
+  <link rel="stylesheet" href="/janus/assets/css/main.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/knsv/mermaid/7.0.0/dist/mermaid.css">
+  <link rel="shortcut icon" type="image/png" href="/janus/assets/img/favicon.png" >
+  <link rel="alternate" type="application/rss+xml" title="Janus" href="/janus/feed.xml">
+  <script src="/janus/assets/js/main.js"></script>
+  
+</head>
+
+
+    <body>
+
+    <header class="uk-background-secondary">
+    <div data-uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky" class="uk-sticky uk-sticky-fixed" style="position: fixed; top: 0px; width: 1904px;">
+        <nav class="uk-navbar-container">
+            <div class="uk-container">
+    <div data-uk-navbar>
+        <div class="uk-navbar-left">
+
+            <a class="uk-navbar-item uk-logo" href="/janus/">Janus</a>
+
+        </div>
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav uk-visible@m">
+                
+                    
+                    
+                        <li><a href="/janus/docs" >Documentation</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/changelog" >Changelog</a></li>
+                    
+                
+                    
+                    
+                        <li><a href="/janus/contact" >Contact</a></li>
+                    
+                
+            </ul>
+
+            
+
+            <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-navbar-toggle-icon data-uk-toggle></a>
+
+        </div>
+    </div>
+</div>
+
+        </nav>
+    </div>
+</header>
+
+
+    
+
+    <div class="uk-section">
+    <div class="uk-container">
+        <div class="uk-grid-large" data-uk-grid>
+
+            <div class="sidebar-fixed-width uk-visible@m">
+                <div class="sidebar-docs uk-position-fixed">
+                    
+                    <h5>Introduction</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/overview/">Overview</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/getting-started/">Getting Started</a></li>
+                    
+                      
+                      
+                      <li class="uk-active"><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+                    
+                    </ul>
+                    
+                    <h5>Technical Guide</h5>
+                    <ul class="uk-nav uk-nav-default doc-nav">
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/monitoring/">Monitoring Watches</a></li>
+                    
+                      
+                      
+                      <li class=""><a href="/janus/docs/examples/">Examples</a></li>
+                    
+                    </ul>
+                    
+                </div>
+            </div>
+
+            <div class="uk-width-1-1 uk-width-expand@m">
+
+                <article class="uk-article">
+
+                    <h1 class="uk-article-title">Defining an JanusWatcher</h1>
+
+                    <p class="subtitle uk-text-lead uk-text-muted">Watch for important events on your deployments</p>
+
+                    <div class="article-content">
+                        <p>Once you have <strong>Janus</strong> installed on your cluster, you are ready to start
+setting up watchers for your deployments. All possible configurations of the
+how, and what, of setting up an JanusWatcher on your deployments are described
+below.</p>
+
+<h4 class="no_toc" id="topics">Topics</h4>
+<ul id="markdown-toc">
+  <li><a href="#required-definition" id="markdown-toc-required-definition">Required definition</a>    <ul>
+      <li><a href="#list-of-all-possible-events" id="markdown-toc-list-of-all-possible-events">List of all possible <code class="highlighter-rouge">events</code></a></li>
+      <li><a href="#limitations" id="markdown-toc-limitations">Limitations</a></li>
+    </ul>
+  </li>
+  <li><a href="#recursively-watching-a-directory" id="markdown-toc-recursively-watching-a-directory">Recursively watching a directory</a></li>
+  <li><a href="#recursively-watching-a-directory-with-a-maximum-depth" id="markdown-toc-recursively-watching-a-directory-with-a-maximum-depth">Recursively watching a directory with a maximum depth</a></li>
+  <li><a href="#ignoring-specific-paths" id="markdown-toc-ignoring-specific-paths">Ignoring specific paths</a></li>
+  <li><a href="#watching-only-directories" id="markdown-toc-watching-only-directories">Watching only directories</a></li>
+  <li><a href="#custom-tagging" id="markdown-toc-custom-tagging">Custom tagging</a></li>
+  <li><a href="#custom-logging-format" id="markdown-toc-custom-logging-format">Custom logging format</a>    <ul>
+      <li><a href="#list-of-all-possible-logformat-specifiers" id="markdown-toc-list-of-all-possible-logformat-specifiers">List of all possible <code class="highlighter-rouge">logFormat</code> specifiers</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="required-definition">Required definition</h2>
+
+<p>At a bare minimum, the fields you need to provide are the <code class="highlighter-rouge">selector</code>, which
+works just like any other label selector in Kubernetes. <code class="highlighter-rouge">matchLabels</code> and
+<code class="highlighter-rouge">matchExpressions</code> are both supported, as described in the <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels">labels and
+selectors</a>
+documentation. The <code class="highlighter-rouge">subjects</code> array allows you to define any number of path and
+event combination to watch.</p>
+
+<p>For example, you have an important path that should never receive any kind of
+modification events. You can set a subject as the example below, in order to
+receive any notification when a <code class="highlighter-rouge">modify</code> inode event happens at that path
+location. This includes any change to the path itself, as well as children
+inside the path.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">januscontroller.clustergarage.io/v1alpha1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">JanusWatcher</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">mywatcher</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">myapp</span>
+  <span class="na">subjects</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">events</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">modify</span>
+    <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/path/to/watch</span>
+</code></pre></div></div>
+
+<h4 id="list-of-all-possible-events">List of all possible <code class="highlighter-rouge">events</code></h4>
+
+<ul>
+  <li><code class="highlighter-rouge">access</code> — file was accessed</li>
+  <li><code class="highlighter-rouge">attrib</code> — metadata changed; for example: permissions, timestamps,
+extended attributes, link count, user/group ID</li>
+  <li><code class="highlighter-rouge">closewrite</code> — file opened for writing was closed</li>
+  <li><code class="highlighter-rouge">closenowrite</code> — file or directory not opened for writing was closed</li>
+  <li><code class="highlighter-rouge">close</code> — includes <code class="highlighter-rouge">closewrite</code> and <code class="highlighter-rouge">closenowrite</code> events</li>
+  <li><code class="highlighter-rouge">create</code> — file or directory was created in watched directory</li>
+  <li><code class="highlighter-rouge">delete</code> — file or directory deleted from watched directory</li>
+  <li><code class="highlighter-rouge">deleteself</code> — watched file or directory was itself deleted</li>
+  <li><code class="highlighter-rouge">modify</code> — file was modified</li>
+  <li><code class="highlighter-rouge">moveself</code> — watched file or directory was itself moved</li>
+  <li><code class="highlighter-rouge">movedfrom</code> — generated for the directory containing the old filename
+when a file is renamed</li>
+  <li><code class="highlighter-rouge">movedto</code> — generated for the directory containing the new filename
+when a file is renamed</li>
+  <li><code class="highlighter-rouge">move</code> — includes <code class="highlighter-rouge">moveself</code>, <code class="highlighter-rouge">movedfrom</code>, and <code class="highlighter-rouge">movedto</code> events</li>
+  <li><code class="highlighter-rouge">open</code> — file or directory was opened</li>
+  <li><code class="highlighter-rouge">all</code> — includes all events listed above</li>
+</ul>
+
+<h4 id="limitations">Limitations</h4>
+
+<ul>
+  <li>If watching a directory that is symlinked, you will need to watch the
+<strong>source</strong> directory, not the destination. A symlink is a special kind of
+file and does not behave exactly like an actual directory. In the case of
+watching the destination, you would only receive events on that file but not
+on any events on any child objects under it.</li>
+</ul>
+
+<h2 id="recursively-watching-a-directory">Recursively watching a directory</h2>
+
+<p>If you’re familiar with <code class="highlighter-rouge">inotify</code> you’d know it only works on a specified path
+and does not watch recursively. We added the ability to do so by passing a flag
+in through the configuration; this will keep a tree of child nodes off the main
+parent path that you pass into the subject <code class="highlighter-rouge">paths</code>. We make sure to handle any
+possible new addition, deletion or update of a child path, even if the parent
+path is modified, deleted, unmounted, from under us.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">subjects</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">events</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">modify</span>
+    <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/path/to/watch</span>
+    <span class="na">recursive</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div></div>
+
+<h2 id="recursively-watching-a-directory-with-a-maximum-depth">Recursively watching a directory with a maximum depth</h2>
+
+<p>In addition to watching recursively, if you only wish to recursively watch at
+a certain number of children below the parent, you can specify a <code class="highlighter-rouge">maxDepth</code>
+amount in the configuration. After that depth is reached it will stop at that
+leaf level and not go any further.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">subjects</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">events</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">modify</span>
+    <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/path/to/watch</span>
+    <span class="na">recursive</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">maxDepth</span><span class="pi">:</span> <span class="s">2</span>
+</code></pre></div></div>
+
+<h2 id="ignoring-specific-paths">Ignoring specific paths</h2>
+
+<p>In addition to the recursive watch option, if there are specific paths you wish
+to ignore, such as a cache or SCM folder, an <code class="highlighter-rouge">ignore</code> array similar to <code class="highlighter-rouge">paths</code>
+can be provided. Currently, these ignored paths are a simple direct comparison,
+not a glob or regex check.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">subjects</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">events</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">modify</span>
+    <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/path/to/watch</span>
+    <span class="na">ignore</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">.cache</span>
+    <span class="pi">-</span> <span class="s">.git</span>
+    <span class="na">recursive</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div></div>
+
+<h2 id="watching-only-directories">Watching only directories</h2>
+
+<p>An extra flag can be provided to <code class="highlighter-rouge">inotify</code> that ensures the watched path is
+specifically a directory type. In the case of modifying that path into a file
+or symlink, it provides a race-free way of ensuring that you are always
+monitoring it as a directory.</p>
+
+<p>In the case of the example below, it would attempt to watch <code class="highlighter-rouge">file.ext</code> as a
+directory; if this is not an actual directory it will ignore it from any
+listeners and will not receive any updates on that file.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">subjects</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">events</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">modify</span>
+    <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/path/to/watch</span>
+    <span class="pi">-</span> <span class="s">/file.ext</span>
+    <span class="na">onlyDir</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div></div>
+
+<h2 id="custom-tagging">Custom tagging</h2>
+
+<p>Custom tags can be added per-subject to allow you to later query specific
+portions of your watchers. These are defined in a YAML-style map and at logging
+time will be condensed into a comma-separated list of <code class="highlighter-rouge">key=value</code> pairs. In the
+case of the below example, when logging an event, the tags will should up as:
+<code class="highlighter-rouge">foo=bar,lorem=ipsum</code> that you can later use your favorite logging aggregator
+and query language to target this specific subject.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">januscontroller.clustergarage.io/v1alpha1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">JanusWatcher</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">mywatcher</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">myapp</span>
+  <span class="na">subjects</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">events</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">modify</span>
+    <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/path/to/watch</span>
+    <span class="na">tags</span><span class="pi">:</span>
+      <span class="na">foo</span><span class="pi">:</span> <span class="s">bar</span>
+      <span class="na">lorem</span><span class="pi">:</span> <span class="s">ipsum</span>
+</code></pre></div></div>
+
+<h2 id="custom-logging-format">Custom logging format</h2>
+
+<p>If you want to specify your own logging format when a watcher is notified of an
+update, you can do so with the <code class="highlighter-rouge">logFormat</code> option. This takes a format string
+with specifiers that we will later interpolate with real values.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">januscontroller.clustergarage.io/v1alpha1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">JanusWatcher</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">mywatcher</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">myapp</span>
+  <span class="na">logFormat</span><span class="pi">:</span> <span class="s2">"</span><span class="s">event</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">{event};</span><span class="nv"> </span><span class="s">path</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">{path};</span><span class="nv"> </span><span class="s">file</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">{file}"</span>
+  <span class="na">subjects</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">events</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">modify</span>
+    <span class="na">paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/path/to/watch</span>
+</code></pre></div></div>
+
+<p>The default log format is <code class="highlighter-rouge">{event} {ftype} '{path}{sep}{file}' ({pod}:{node}) {tags}</code>.</p>
+
+<blockquote>
+  <p>Example output using the default format:
+<code class="highlighter-rouge">MODIFY file '/path/to/file.ext' (foo-1-pod:barnode) foo=bar</code></p>
+</blockquote>
+
+<h4 id="list-of-all-possible-logformat-specifiers">List of all possible <code class="highlighter-rouge">logFormat</code> specifiers</h4>
+
+<ul>
+  <li><code class="highlighter-rouge">pod</code> — name of the pod</li>
+  <li><code class="highlighter-rouge">node</code> — name of the node</li>
+  <li><code class="highlighter-rouge">event</code> — inotify event that was observed</li>
+  <li><code class="highlighter-rouge">path</code> — name of the directory path</li>
+  <li><code class="highlighter-rouge">file</code> — name of the file</li>
+  <li><code class="highlighter-rouge">ftype</code> — evaluates to “file” or “directory”</li>
+  <li><code class="highlighter-rouge">tags</code> — list of custom tags in key=value comma-separated list</li>
+  <li><code class="highlighter-rouge">sep</code> — placeholder for a “/” character to include (e.g. between the
+<code class="highlighter-rouge">path</code>/<code class="highlighter-rouge">file</code> specifiers)</li>
+</ul>
+
+
+                    </div>
+
+                    <hr class="uk-margin-medium">
+
+                    
+
+
+  
+  
+
+  
+  
+
+  
+  
+    <ul class="uk-pagination uk-margin-top">
+          
+            
+            
+            <li><a class="hvr-back" href="/janus/docs/getting-started/">&larr; Previous</a></li>
+          
+          
+            
+            
+            <li class="uk-margin-auto-left"><a class="hvr-forward" href="/janus/docs/monitoring/">Next &rarr;</a></li>
+          
+    </ul>
+    
+
+
+                    <div class="uk-margin-large-top">
+    <h3>What's Next</h3>
+
+    
+    
+    
+
+    <ul class="uk-list">
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/getting-started/">Getting Started</a></li>
+        
+        
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/monitoring/">Monitoring Watches</a></li>
+        
+        
+    
+
+    
+
+    
+    
+
+    
+
+    
+        <li><a href="/janus/docs/overview/">Overview</a></li>
+        
+        
+    
+
+    
+    </ul>
+</div>
+
+                </article>
+
+                <script>
+                    // Table of contents scroll to
+                    UIkit.scroll('#markdown-toc a', {
+                        duration: 400,
+                        offset: 120
+                    });
+                </script>
+
+            </div>
+
+    </div>
+</div>
+
+
+    <div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" data-uk-close></button>
+
+        <ul class="uk-nav uk-nav-default">
+            <li><a class="uk-logo uk-margin-small-bottom" href="/janus/">Janus</a></li>
+            
+            <li><a href="/janus/docs" >Documentation</a></li>
+            
+            <li><a href="/janus/changelog" >Changelog</a></li>
+            
+            <li><a href="/janus/contact" >Contact</a></li>
+            
+        </ul>
+    </div>
+</div>
+
+
+    
+
+    </body>
+
+</html>
