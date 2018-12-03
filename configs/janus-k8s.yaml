@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: janus
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: janus-admin
+  namespace: janus
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: janus-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: janus-admin
+  namespace: janus
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: januswatchers.januscontroller.clustergarage.io
+spec:
+  group: januscontroller.clustergarage.io
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    kind: JanusWatcher
+    singular: januswatcher
+    plural: januswatchers
+    shortNames:
+    - jw
+    categories:
+    - all
+  subresources:
+    status: {}
+  additionalPrinterColumns:
+  - name: Observable
+    type: integer
+    description: Number of pods that can be watched
+    JSONPath: .status.observablePods
+  - name: Watched
+    type: integer
+    description: Number of pods currently being watched
+    JSONPath: .status.watchedPods
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: januscontroller
+  namespace: janus
+  labels:
+    controller: januscontroller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      controller: januscontroller
+  template:
+    metadata:
+      labels:
+        controller: januscontroller
+    spec:
+      containers:
+      - name: januscontroller
+        image: clustergarage/janus-controller:v0.1.0
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":5000"]
+          initialDelaySeconds: 10
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":5000"]
+          initialDelaySeconds: 5
+      serviceAccountName: janus-admin
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: janusd
+  namespace: janus
+  labels:
+    daemon: janusd
+spec:
+  selector:
+    matchLabels:
+      daemon: janusd
+  template:
+    metadata:
+      labels:
+        daemon: janusd
+    spec:
+      containers:
+      - name: janusd
+        image: clustergarage/janusd:v0.1.0
+        ports:
+        - name: grpc
+          containerPort: 50051
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":50051"]
+          initialDelaySeconds: 10
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr", ":50051"]
+          initialDelaySeconds: 5
+        volumeMounts:
+        - name: sysfscgroup
+          mountPath: /sys/fs/cgroup
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN
+            - SYS_PTRACE
+      hostPID: true
+      serviceAccountName: janus-admin
+      volumes:
+      - name: sysfscgroup
+        hostPath:
+          path: /sys/fs/cgroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: janusd-svc
+  namespace: janus
+  labels:
+    daemon: janusd
+spec:
+  selector:
+    daemon: janusd
+  clusterIP: None
+  ports:
+  - name: grpc
+    port: 50051
+    targetPort: grpc

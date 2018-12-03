@@ -1,0 +1,16 @@
+---
+apiVersion: januscontroller.clustergarage.io/v1alpha1
+kind: JanusWatcher
+metadata:
+  name: nginx-janus-watcher
+spec:
+  selector:
+    matchLabels:
+      run: nginx
+  subjects:
+  - allow:
+    - /etc/nginx
+    deny:
+    - /etc/init.d/nginx
+    events:
+    - all
