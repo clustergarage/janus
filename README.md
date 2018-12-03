@@ -6,7 +6,7 @@ This repository fronts the **Janus** application suite. It includes several comp
 
 ## Purpose
 
-The files that build the [documentation](https://clustergarage.io/janus/) are hosted and maintained here. Configuration files are hosted in order to be linked as raw YAML that can be `apply`ed to your running cluster. In addition to those, a suite of common examples that allow you to familiarize yourself with how to set up watchers on common applications in both vanilla Kubernetes as well as OpenShift variants.
+The files that build the [documentation](https://clustergarage.io/janus/) are hosted and maintained here. Configuration files are hosted in order to be linked as raw YAML that can be `apply`ed to your running cluster. In addition to those, a suite of common examples that allow you to familiarize yourself with how to set up guards on common applications in both vanilla Kubernetes as well as OpenShift variants.
 
 ## Configuration Files
 
@@ -23,7 +23,7 @@ Presents the production configuration files to stand it up in your running clust
 Located under:
 - `examples/*`
 
-Provides sample configurations to create and monitor JanusWatchers with various applications that will be outlined in the [examples](https://clustergarage.io/janus/docs/examples/) documentation.
+Provides sample configurations to create and monitor JanusGuards with various applications that will be outlined in the [examples](https://clustergarage.io/janus/docs/examples/) documentation.
 
 ## Helm Repository
 

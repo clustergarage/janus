@@ -3,7 +3,7 @@
   docs:
   - overview
   - getting-started
-  - januswatcher
+  - janusguard
 - title: Technical Guide
   docs:
   - monitoring

@@ -77,7 +77,7 @@
     <div class="uk-container uk-container-small">
         
         <h1 class="uk-heading-hero uk-text-center uk-margin-remove-top">Janus</h1>
-        <p class="subtitle uk-text-lead uk-text-center">File Integrity Monitoring for Kubernetes</p>
+        <p class="subtitle uk-text-lead uk-text-center">Filesystem Gatekeeper for Kubernetes</p>
 
         
 
@@ -123,13 +123,13 @@
             
             <div>
                 <div class="uk-card uk-card-body uk-inline uk-border-rounded">
-                    <a class="uk-position-cover" href="/janus/docs/januswatcher/"></a>
+                    <a class="uk-position-cover" href="/janus/docs/janusguard/"></a>
                     
                     <span data-uk-icon="icon: cog; ratio: 2" class=""></span>
                     
-                    <h3 class="uk-card-title uk-margin">Defining Watchers</h3>
+                    <h3 class="uk-card-title uk-margin">Defining Guards</h3>
                     
-                    <p>Full list of features and options that can be defined for an JanusWatcher.
+                    <p>Full list of features and options that can be defined for a JanusGuard.
 </p>
                     
                 </div>
@@ -170,17 +170,18 @@
             <h2 class="uk-text-center heading-hero-2">Why would I use Janus?</h2>
         
 
-        <p class="subtitle uk-text-lead uk-text-center">Gain insight into directory and file changes for apps in your Kubernetes
-cluster; be confident come assessment time.
+        <p class="subtitle uk-text-lead uk-text-center">To be able to set permission rules to allow or deny filesystem events on
+specific directories, files, or mountpoints.
 </p>
 
         <div class="article-content uk-margin-medium-top"><h2 id="in-more-words">In more words…</h2>
 
-<p>At the time of creating this product, there weren’t any other solutions out
-there. We designed the architecture around common Linux kernel functionality to
-ensure well-known practices around inode monitoring. The rest of which was
-making sure it performed well in a clustered environment, and had features that
-security experts and assessors could healthily engage on.</p>
+<p>In keeping with the “do a single task, really well” mindset, we wanted to make
+extra features available for the <a href="https://clustergarage.io/argus">Arugs</a>
+project that didn’t entirely fit the specific use case of that app. Breaking it
+out into this project made more sense. Leveraging <code class="highlighter-rouge">fanotify</code>, we based Janus
+around the need to set permission rules to allow or deny certain events on
+filesystem objects.</p>
 </div>
     </div>
 </div>

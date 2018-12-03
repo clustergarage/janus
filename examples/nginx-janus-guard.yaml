@@ -1,8 +1,8 @@
 ---
 apiVersion: januscontroller.clustergarage.io/v1alpha1
-kind: JanusWatcher
+kind: JanusGuard
 metadata:
-  name: nginx-janus-watcher
+  name: nginx-janus-guard
 spec:
   selector:
     matchLabels:

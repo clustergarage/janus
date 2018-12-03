@@ -4,11 +4,11 @@
     Jump right in and start using the product with minimal requirements.
   icon: play-circle
   doc: getting-started
-- title: Defining Watchers
+- title: Defining Guards
   desc: |
-    Full list of features and options that can be defined for an JanusWatcher.
+    Full list of features and options that can be defined for a JanusGuard.
   icon: cog
-  doc: januswatcher
+  doc: janusguard
 - title: Technical Guide
   desc: |
     Deep dive of the architecture and how it works in a clustered environment.

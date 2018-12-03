@@ -10,13 +10,13 @@
 <meta name="generator" content="Jekyll v3.7.4" />
 <meta property="og:title" content="Overview" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Janus is a set of custom Kubernetes resources that facilitates filesystem event monitoring on specified paths. It provides a rich set of configurations to run alongside your existing Kubernetes deployments to make it easy to denote assessment-ready file integrity monitoring." />
-<meta property="og:description" content="Janus is a set of custom Kubernetes resources that facilitates filesystem event monitoring on specified paths. It provides a rich set of configurations to run alongside your existing Kubernetes deployments to make it easy to denote assessment-ready file integrity monitoring." />
+<meta name="description" content="Janus is a set of custom Kubernetes resources that acts as a gatekeeper for filesystem permission events on specified paths. It provides a rich set of configurations to run alongside your existing Kubernetes deployments to ensure that outside processes can or cannot open or access these paths." />
+<meta property="og:description" content="Janus is a set of custom Kubernetes resources that acts as a gatekeeper for filesystem permission events on specified paths. It provides a rich set of configurations to run alongside your existing Kubernetes deployments to ensure that outside processes can or cannot open or access these paths." />
 <meta property="og:site_name" content="Janus" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2018-12-02T21:09:33-05:00" />
+<meta property="article:published_time" content="2018-12-03T11:10:47-05:00" />
 <script type="application/ld+json">
-{"description":"Janus is a set of custom Kubernetes resources that facilitates filesystem event monitoring on specified paths. It provides a rich set of configurations to run alongside your existing Kubernetes deployments to make it easy to denote assessment-ready file integrity monitoring.","@type":"BlogPosting","url":"/janus/docs/overview/","headline":"Overview","datePublished":"2018-12-02T21:09:33-05:00","dateModified":"2018-12-02T21:09:33-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/janus/docs/overview/"},"@context":"http://schema.org"}</script>
+{"description":"Janus is a set of custom Kubernetes resources that acts as a gatekeeper for filesystem permission events on specified paths. It provides a rich set of configurations to run alongside your existing Kubernetes deployments to ensure that outside processes can or cannot open or access these paths.","@type":"BlogPosting","url":"/janus/docs/overview/","headline":"Overview","datePublished":"2018-12-03T11:10:47-05:00","dateModified":"2018-12-03T11:10:47-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/janus/docs/overview/"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
   <meta property="og:image" content=""/>
@@ -96,7 +96,7 @@
                     
                       
                       
-                      <li class=""><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+                      <li class=""><a href="/janus/docs/janusguard/">Defining a JanusGuard</a></li>
                     
                     </ul>
                     
@@ -105,7 +105,7 @@
                     
                       
                       
-                      <li class=""><a href="/janus/docs/monitoring/">Monitoring Watches</a></li>
+                      <li class=""><a href="/janus/docs/monitoring/">Monitoring Guards</a></li>
                     
                       
                       
@@ -125,23 +125,18 @@
                     <p class="subtitle uk-text-lead uk-text-muted">Deep dive into Janus and its architecture</p>
 
                     <div class="article-content">
-                        <p><strong>Janus</strong> is a set of custom Kubernetes resources that facilitates filesystem
-event monitoring on specified paths. It provides a rich set of configurations
-to run alongside your existing Kubernetes deployments to make it easy to denote
-assessment-ready file integrity monitoring.</p>
+                        <p><strong>Janus</strong> is a set of custom Kubernetes resources that acts as a gatekeeper for
+filesystem permission events on specified paths. It provides a rich set of
+configurations to run alongside your existing Kubernetes deployments to ensure
+that outside processes can or cannot open or access these paths.</p>
 
 <p>In deploying <strong>Janus</strong> into your cluster, a couple of components will be
 initialized. First, the controller listens directly for Kubernetes events and
 is responsible for syncing cluster state with the daemons running on each node
-to make sure specified pods that need to be watched, are. Second, the daemon is
+to make sure specified pods that need to be guarded, are. Second, the daemon is
 run on each node to ensure that it can monitor running pods on the same node.
-It is charged with setting up inode watchers via <code class="highlighter-rouge">inotify</code> to allow you to see
-when certain filesystem events happen on the desired paths inside the pod.</p>
-
-<blockquote>
-  <p>It will be up to you to store, monitor, and alert on these logged events
-using your favorite tools of choice.</p>
-</blockquote>
+It is charged with marking inodes via <code class="highlighter-rouge">fanotify</code> to allow you to set guards for
+certain filesystem events on the desired paths inside the pod.</p>
 
 <p>We will provide some common patterns using sets of popular tools further in
 this documentation.</p>
@@ -151,36 +146,36 @@ this documentation.</p>
 <script src="https://unpkg.com/mermaid@7.0.0/dist/mermaid.min.js"></script>
 <div class="mermaid">
 graph RL
-    A((procfs)) --&gt;|inotify| B[janusnotify]
+    A((procfs)) --&gt;|fanotify| B[janusnotify]
     subgraph daemon
     C{janusd} --&gt; B
-    B .-&gt;|mqueue| C
     end
     D[janus-controller] ==&gt;|gRPC| C
     C .-&gt; D
     subgraph controller
     E(K8s listers<br />K8s informers) --&gt; D
-    F(janusWatcher CRDs) --&gt; D
+    F(JanusGuard CRDs) --&gt; D
     end
 </div>
 
 <h3 id="custom-resource-definition">Custom Resource Definition</h3>
 
-<p>In order to describe the set of pods you want to create a watcher for, what
-paths you are interested in monitoring, and for what events, you’ll soon find
-yourself creating a <strong>JanusWatcher</strong> <code class="highlighter-rouge">CustomResourceDefinition</code>. That is, a
-Kubernetes custom type that will be configured in your cluster, that gives a
-specification to define a watcher type with all the fields and flags the
-controller will understand, configure, and pass along to the daemon so it can
-watch appropriately in the fashion you describe.</p>
+<p>In order to describe the set of pods you want to create a guard for, what
+allow and deny paths you are interested in guarding, and for what events,
+you’ll soon find yourself creating a <strong>JanusGuard</strong>
+<code class="highlighter-rouge">CustomResourceDefinition</code>. That is, a Kubernetes custom type that will be
+configured in your cluster, that gives a specification to define a guard type
+with all the fields and flags the controller will understand, configure, and
+pass along to the daemon so it can guard appropriately in the fashion you
+describe.</p>
 
 <h3 id="controller">Controller</h3>
 
 <p><strong>janus-controller</strong> is the glue between the Kubernetes lifecycle and the
-daemons listening for events on the filesystems. It responds to events such as
-pod listers add, update, and delete, making sure that the proper state of the
-daemon that is running on the same node as that pod has the watcher either
-started or not on that daemon.</p>
+daemons listening for events and sending permission responses on the
+filesystems. It responds to events such as pod listers add, update, and delete,
+making sure that the proper state of the daemon that is running on the same
+node as that pod has the guard either started or not on that daemon.</p>
 
 <p>This controller operates in an idempotent fashion, in such cases that the
 controller pod running is terminated and a new one spins up, it immediately
@@ -191,20 +186,20 @@ that pod’s current state (nothing) with what we expect it should be, and
 all addition calls should be immediately fired; same as the previous case but
 in reverse.</p>
 
-<p>The other set of types the controller listens for is the <strong>JanusWatcher</strong>
+<p>The other set of types the controller listens for is the <strong>JanusGuard</strong>
 <code class="highlighter-rouge">CustomResourceDefinition</code> described above. This is the definition that you
-will create to define what selector, paths, events, and lots of optional
-flags to create the notion of a file integrity monitor watcher.</p>
+will create to define what selector, paths, events, and optional flags to
+create the notion of a filesystem gatekeeper.</p>
 
 <h3 id="daemon">Daemon</h3>
 
 <p>The <strong>janusd</strong> daemon will be deployed on all cluster nodes via a <code class="highlighter-rouge">DaemonSet</code>.
 It starts a gRPC server to communicate back-and-forth with the controller,
 described above. When it receives a message from the controller to create a
-watcher, it takes the desired configuration and spawns a <strong>janusnotify</strong>
-process with a custom set of rules. For example, if one wishes to watch the
-path recursively, this can be configured with an optional flag and will
-maintain a tree of additional paths to watch under the parent.</p>
+guard, it takes the desired configuration and spawns a <strong>janusnotify</strong> process
+with a custom set of rules. For example, if one wishes to guard the entire
+mountpoint that a directory or file resides on, this can be configured with an
+optional flag.</p>
 
 <script src="https://unpkg.com/mermaid@7.0.0/dist/mermaid.min.js"></script>
 <div class="mermaid">
@@ -213,33 +208,24 @@ sequenceDiagram
     participant B as janusnotify
     participant C as procfs
     A-&gt;&gt;+B: Creates child processes
-    B-&gt;&gt;C: Creates inotify watchers
-    Note over B,C: Polling for inotify events...
-    loop inotify event
-      C-&gt;&gt;B: Write event to mq
+    B-&gt;&gt;C: Creates fanotify marks
+    Note over B,C: Polling for fanotify events...
+    loop fanotify event
+      C-&gt;&gt;B: Write permission response
       opt exit signal
           B--&gt;C: Stop polling and exit
       end
     end
-    Note over A,B: Listening on message queue...
-    loop mq message
-      B-&gt;&gt;A: Print log message
-      opt mq exit msg
-          A-&gt;&gt;-B: Kill janusnotify process
-      end
-    end
 </div>
 
-<p>Once the <strong>janusnotify</strong> process receives an <code class="highlighter-rouge">inotify</code> message that the user
-configured to watch for, it sends that message back to the <strong>janusd</strong> process
-via a message queue and logs it in the cluster pod with any additional custom
-logging configuration. This log can be picked up in the same way you’d watch
-for logs in any other Kubernetes component.</p>
+<p>Once the <strong>janusnotify</strong> process receives an <code class="highlighter-rouge">fanotify</code> message that the user
+configured to guard, it writes a response to allow or deny that event, based on
+how you configure your guard paths.</p>
 
-<p>Upon receiving an additional create message, if the watcher already exists, it
+<p>Upon receiving an additional create message, if the guard already exists, it
 will handle it in an idempotent way, and simply update with the current
-configuration. When receiving a delete message, if the watcher exists, it will
-shut down the processes involved and remove this watcher from the daemon’s
+configuration. When receiving a delete message, if the guard exists, it will
+shut down the processes involved and remove this guard from the daemon’s
 current state.</p>
 
 <p>There is an additional state check called periodically by the controller that
@@ -309,7 +295,7 @@ always be recreated in these cases.</p>
     
 
     
-        <li><a href="/janus/docs/januswatcher/">Defining an JanusWatcher</a></li>
+        <li><a href="/janus/docs/janusguard/">Defining a JanusGuard</a></li>
         
         
     

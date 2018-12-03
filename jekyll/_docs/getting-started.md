@@ -2,11 +2,11 @@
 layout: doc
 title: Getting Started
 subtitle: Installing Janus in your Kubernetes cluster
-tags: introduction januswatcher
+tags: introduction janusguard
 ---
 
-**Janus** works by configuring a custom Kubernetes resource that defines
-paths and events that you want to be notified about for your current
+**Janus** works by configuring a custom Kubernetes resource that defines paths
+and events that you want to define permissions for, for your current
 deployments. This custom resource, in conjunction with a cluster controller
 running and listening for lifecycle events, is responsible for maintaining a
 source of truth between the state of the cluster and the daemons listening for
@@ -25,7 +25,7 @@ additional requirements to run both the daemon with Linux capabilities and the
 controller with an appropriate level of access to receive cluster events.
 
 Since procfs `/proc/[pid]` subdirectories are owned by the effective user and
-group of the process, we require escalated privileges so the daemon can watch
+group of the process, we require escalated capabilities so the daemon can guard
 for filesystem events of any process running in your cluster, directly on the
 host.
 
@@ -40,8 +40,8 @@ OpenShift, which has additional security measures in place.
 
 {% codetabs %}
 {% codetab Kubernetes %}
-To deploy **Janus** on a vanilla Kubernetes environment, simply run an
-`apply` on the following hosted configuration:
+To deploy **Janus** on a vanilla Kubernetes environment, simply run an `apply`
+on the following hosted configuration:
 
 ```shell
 kubectl apply -f \
@@ -98,9 +98,8 @@ Under the **janus** namespace is a `ServiceAccount` used to run all items of
 settings that allow the controller and daemon to be run with their required
 privileges.
 
-A `CustomResourceDefinition` is included to define a custom **JanusWatcher**
-type housing the pod selector, paths, events, and optional flags for the
-watcher.
+A `CustomResourceDefinition` is included to define a custom **JanusGuard** type
+housing the pod selector, paths, events, and optional flags for the guard.
 
 Finally, the **januscontroller** `Deployment` and **janusd** `DaemonSet` are
 the core of the product. There is a headless `Service` used to communicate
@@ -171,7 +170,7 @@ helm install ./janus --set tls=true
 ## Limitations and Caveats
 
 `janusd` should be scheduled out on all nodes that can handle compute that you
-would want to monitor. If your nodes have any
+would want to guard. If your nodes have any
 [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/),
 then there will need to be an explicit tolerance set on the **DaemonSet** in
 order for these pods to be run on them. It will be up to you to add the
@@ -180,8 +179,7 @@ appropriate tolerance to the configuration.
 Certain images (such as the official **nginx**) will symlink to special devices
 such as `/var/log/nginx/access.log -> /dev/stdout`. These devices are streams
 which are symlinks to pseudo-terminals on the system and are not files that can
-be monitored by `inotify`. For the same reason, they are also not candidates for
-the practice of file integrity monitoring.
+be marked by `fanotify`.
 
 ## Need Help?
 
