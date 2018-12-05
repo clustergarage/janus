@@ -29,6 +29,7 @@ graph RL
     A((procfs)) -->|fanotify| B[janusnotify]
     subgraph daemon
     C{janusd} --> B
+    B .->|logfn| C
     end
     D[janus-controller] ==>|gRPC| C
     C .-> D
