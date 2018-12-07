@@ -89,6 +89,7 @@ metadata:
 allowHostDirVolumePlugin: true
 allowHostPID: true
 allowedCapabilities:
+- AUDIT_WRITE
 - SYS_ADMIN
 - SYS_PTRACE
 fsGroup:
@@ -238,6 +239,7 @@ spec:
         securityContext:
           capabilities:
             add:
+            - AUDIT_WRITE
             - SYS_ADMIN
             - SYS_PTRACE
       hostPID: true

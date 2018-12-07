@@ -140,6 +140,7 @@ spec:
         securityContext:
           capabilities:
             add:
+            - AUDIT_WRITE
             - SYS_ADMIN
             - SYS_PTRACE
       hostPID: true

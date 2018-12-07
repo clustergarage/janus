@@ -74,7 +74,7 @@ listeners and will not receive any events on that file.
 ```yaml
 subjects:
 - allow:
-  - /path/to/guard
+  - /path/to/allow
   - /file.ext
   events:
   - modify
@@ -94,17 +94,39 @@ this event.
 ```yaml
 subjects:
 - allow:
-  - /path/to/guard
+  - /path/to/allow
   deny:
-  - /another/path
+  - /path/to/deny
   events:
   - all
   autoAllowOwner: true
 ```
 
-When an event happens for either `/path/to/guard` or `/another/path`, if the
+When an event happens for either `/path/to/allow` or `/path/to/deny`, if the
 event metadata PID is the same as the owning process or its parent, it will
 write an allow permission response.
+
+## Audit permission events
+
+The `fanotify` specification has an optional ability to write any permission
+event responses to the kernel's audit log. Whether your kernel does this this
+audit collection in `auditd`, or other options, it will be up to you to
+configure this as required.
+
+```yaml
+subjects:
+- allow:
+  - /path/to/allow
+  deny:
+  - /path/to/deny
+  audit: true
+```
+
+When configured properly, it will write `FANOTIFY` type events to your audit
+log.
+
+> When configured properly, `FANOTIFY` type events will be written to the log:
+`type=FANOTIFY msg=audit(1504310584.332:290): resp=2`
 
 ## Custom tagging
 
@@ -126,7 +148,7 @@ spec:
       app: myapp
   subjects:
   - allow:
-    - /path/to/guard
+    - /path/to/allow
     events:
     - modify
     tags:
@@ -152,7 +174,7 @@ spec:
   logFormat: "event = {event}; path = {path}; file = {file}; response = {allow}"
   subjects:
   - allow:
-    - /path/to/guard
+    - /path/to/allow
     events:
     - modify
 ```
