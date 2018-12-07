@@ -106,6 +106,14 @@ When an event happens for either `/path/to/allow` or `/path/to/deny`, if the
 event metadata PID is the same as the owning process or its parent, it will
 write an allow permission response.
 
+#### Limitations
+
+- When the container is `kubectl exec` or `oc rsh` into it will create a shell
+  process in that container that can possibly be picked when watching this
+  container for updates. If that happens, it will pick by lowest integer first;
+  if that so happens to be the shell PID, this flag will **not** match properly
+  and will fall back to default behavior.
+
 ## Audit permission events
 
 The `fanotify` specification has an optional ability to write any permission
