@@ -70,7 +70,7 @@ in reverse.
 The other set of types the controller listens for is the **JanusGuard**
 `CustomResourceDefinition` described above. This is the definition that you
 will create to define what selector, paths, events, and optional flags to
-create the notion of a filesystem gatekeeper.
+create the notion of file access auditing.
 
 
 ### Daemon

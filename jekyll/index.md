@@ -1,9 +1,9 @@
 ---
 layout: home
-title: Filesystem Gatekeeper for Kubernetes
+title: File Access Auditing for Kubernetes
 hero:
   title: Janus
-  subtitle: Filesystem Gatekeeper for Kubernetes
+  subtitle: File Access Auditing for Kubernetes
   search: false
 categories:
   columns: 3

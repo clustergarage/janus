@@ -4,7 +4,7 @@ entries:
   - apiVersion: v1
     appVersion: "v0.1.0"
     created: 2018-12-03T13:30:45.053943167-05:00
-    description: Helm chart for Janus - Filesystem Permissions Gatekeeper.
+    description: Helm chart for Janus - File Access Auditing for Kubernetes.
     digest: 37e51ee3ceb65bd08d381d4fd629e70893bd2ae9905c88460a2fe7bc9ce926b4
     name: janus
     urls:

@@ -1,5 +1,5 @@
 title: Janus
-description: Filesystem Gatekeeper for Kubernetes
+description: File Access Auditing for Kubernetes
 baseurl: /janus
 permalink: /:title/
 brand:

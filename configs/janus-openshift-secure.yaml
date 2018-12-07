@@ -4,7 +4,7 @@ kind: Project
 metadata:
   annotations:
     openshift.io/display-name: "Janus"
-    openshift.io/description: "Filesystem permission gatekeeper for Kubernetes"
+    openshift.io/description: "File access auditing for Kubernetes"
   name: janus
 spec:
   finalizers:
