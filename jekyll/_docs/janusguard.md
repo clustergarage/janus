@@ -81,6 +81,31 @@ subjects:
   onlyDir: true
 ```
 
+## Automatically allow owner process events
+
+When marking a path that you want to specifically control the permissions for,
+but you don't want to change the behavior of the owning process that needs to
+read from the filesystem directories it owns, we provide a flag to check the
+`fanotify` event metadata which provides the PID the event came from, and
+compare with the PID and parent PID of the process we're marking. If either of
+these matches with this flag set, it will automatically allow permission for
+this event.
+
+```yaml
+subjects:
+- allow:
+  - /path/to/guard
+  deny:
+  - /another/path
+  events:
+  - all
+  autoAllowOwner: true
+```
+
+When an event happens for either `/path/to/guard` or `/another/path`, if the
+event metadata PID is the same as the owning process or its parent, it will
+write an allow permission response.
+
 ## Custom tagging
 
 Custom tags can be added per-subject to allow you to later query specific
