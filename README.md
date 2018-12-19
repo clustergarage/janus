@@ -1,5 +1,7 @@
 # Janus
 
+[![Latest Janus release](https://img.shields.io/github/release/clustergarage/janus.svg?style=flat-square)](https://github.com/clustergarage/janus)
+
 This repository fronts the **Janus** application suite. It includes several components that make up the documentation, configuration files linked in the docs, and a set of common examples to get you started.
 
 **tl;dr--** [get started here](https://clustergarage.io/janus/docs/getting-started/)!
